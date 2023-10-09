@@ -13,23 +13,18 @@ $mysqli = new mysqli("localhost", "root", "root", "voisinous");
         . "id = '" . $groupId . "'";
         $searchGroup = $mysqli->query($querySearchGroup);
         $resultGroup = $searchGroup->fetch_assoc();
+        
         $queryGetUserIdForGroupe = "SELECT * "
         . "FROM groupemembers "
         . "WHERE " 
         . "groupid = '" . $groupId . "'";
         $searchUserForGroup = $mysqli->query($queryGetUserIdForGroupe);
         $resultUserForGroup = $searchUserForGroup->fetch_assoc();
-
-
-        if($resultGroup != null && $resultUserForGroup != null){
-            print_r($resultGroup);
             print_r($resultUserForGroup);
-        }
-        else{
-            $errorMessage = 'Aucun groupe a cette localisation !';
-        }
-        }
-        
+            
+           }
+
+
         ?>
 
 
@@ -62,11 +57,13 @@ $mysqli = new mysqli("localhost", "root", "root", "voisinous");
                 <p><?php echo $resultGroup['description']?></p>
                 <h3>Membres</h3>
                 <ul>
-                <?php foreach($resultUserForGroup as $user){?>
-                    
-                    <li><?php echo $user ?></li>
-                    
-                <?php } ?>
+                <?php foreach ($resultUserForGroup as $user) { 
+                    $queryGroupInfo = "SELECT * 
+                    FROM users
+                    WHERE id = " . $user['id'] . ";";
+                    $groupInfo = $mysqli->query($queryGroupInfo);
+                    $resultUserOfGroup = $groupInfo->fetch_assoc();
+                    ?><li><?php echo $resultUserOfGroup['pseudo']?></li> <?php }?>
                  </ul> 
                 
             </article>
