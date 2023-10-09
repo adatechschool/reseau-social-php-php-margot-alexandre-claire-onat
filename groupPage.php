@@ -19,10 +19,21 @@ $mysqli = new mysqli("localhost", "root", "root", "voisinous");
         . "WHERE " 
         . "groupid = '" . $groupId . "'";
         $searchUserForGroup = $mysqli->query($queryGetUserIdForGroupe);
-        $resultUserForGroup = $searchUserForGroup->fetch_assoc();
-            print_r($resultUserForGroup);
+        $resultUserForGroup = array();
+            foreach ($searchUserForGroup as $userId){
+                    //print_r($userId);
+                    $queryUserInfo = "SELECT * 
+                    FROM users
+                    WHERE id = " . $userId['userid'] . ";";
+                    $userInfo = $mysqli->query($queryUserInfo);
+                    $resultUserOfGroup = $userInfo->fetch_array();
+                    print_r($resultUserOfGroup);
+                    array_push($resultUserForGroup,$resultUserOfGroup);
+
             
+           // print_r($resultUserForGroup);
            }
+        }
 
 
         ?>
@@ -57,14 +68,11 @@ $mysqli = new mysqli("localhost", "root", "root", "voisinous");
                 <p><?php echo $resultGroup['description']?></p>
                 <h3>Membres</h3>
                 <ul>
-                <?php foreach ($resultUserForGroup as $user) { 
-                    $queryGroupInfo = "SELECT * 
-                    FROM users
-                    WHERE id = " . $user['id'] . ";";
-                    $groupInfo = $mysqli->query($queryGroupInfo);
-                    $resultUserOfGroup = $groupInfo->fetch_assoc();
-                    ?><li><?php echo $resultUserOfGroup['pseudo']?></li> <?php }?>
+                <?php foreach ($resultUserForGroup as $user){
+                 echo "<li>" . $user['pseudo'] ."</li>";}
+                 ?>
                  </ul> 
+                 
                 
             </article>
         </aside>
