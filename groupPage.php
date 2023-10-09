@@ -6,15 +6,24 @@ $mysqli = new mysqli("localhost", "root", "root", "voisinous");
         exit();
     }
     else{
-        $groupId = "2"; // recupéré id du groupe grace a l'url
+        $groupId = "11"; // recupéré id du groupe grace a l'url
         $querySearchGroup = "SELECT * "
         . "FROM groupes "
         . "WHERE "
         . "id = '" . $groupId . "'";
         $searchGroup = $mysqli->query($querySearchGroup);
-        $result = $searchGroup->fetch_assoc();
-        if($result != null){
-            print_r($result);
+        $resultGroup = $searchGroup->fetch_assoc();
+        $queryGetUserIdForGroupe = "SELECT * "
+        . "FROM groupemembers "
+        . "WHERE " 
+        . "groupid = '" . $groupId . "'";
+        $searchUserForGroup = $mysqli->query($queryGetUserIdForGroupe);
+        $resultUserForGroup = $searchUserForGroup->fetch_assoc();
+
+
+        if($resultGroup != null && $resultUserForGroup != null){
+            print_r($resultGroup);
+            print_r($resultUserForGroup);
         }
         else{
             $errorMessage = 'Aucun groupe a cette localisation !';
@@ -46,17 +55,20 @@ $mysqli = new mysqli("localhost", "root", "root", "voisinous");
                     src="https://scontent-cdg4-3.xx.fbcdn.net/v/t39.30808-6/295177885_469072138554182_3136524954159481461_n.png?_nc_cat=106&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=lr7_QKzipPwAX-JIw3E&_nc_ht=scontent-cdg4-3.xx&cb_e2o_trans=t&oh=00_AfBCbK-3QSZDGUaUXKm9ni9KPU_qhcC1CyCl6vMPKTh9Qw&oe=6522828A" />
                 <div>
                     <div>
-                        <h3> <?php echo $result['name']?> </h3><br />
-                        <span><?php echo $result['localisation']?></span>
+                        <h3> <?php echo $resultGroup['name']?> </h3><br />
+                        <span><?php echo $resultGroup['localisation']?></span>
                     </div>
                 </div>
-                <p><?php echo $result['decription']?></p>
+                <p><?php echo $resultGroup['description']?></p>
                 <h3>Membres</h3>
                 <ul>
-                    <li>Gérard</li>
-                    <li>Michel</li>
-                    <li>Jacqueline</li>
-                </ul>
+                <?php foreach($resultUserForGroup as $user){?>
+                    
+                    <li><?php echo $user ?></li>
+                    
+                <?php } ?>
+                 </ul> 
+                
             </article>
         </aside>
         <section id="groupFeed">
