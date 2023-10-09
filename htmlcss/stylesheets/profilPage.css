@@ -1,0 +1,28 @@
+@import url(navbar.css);
+
+
+
+html {
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: lightgray;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#userInfo{
+
+display: flex;
+justify-content: flex-start;
+list-style: none;
+}
+
+#userPhoto{
+
+    display: flex;
+    justify-content: center;
+    }
