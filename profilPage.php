@@ -14,15 +14,15 @@ if ($mysqli->connect_errno) {
         $searchUser = $mysqli->query($querySearchUser);
         $resultUser = $searchUser->fetch_assoc();
     if(!empty ($_POST)){
-    
     $pseudo = $resultUser["pseudo"];
     $mail = $resultUser["mail"];
     $mdphash = $_POST["mdp"]== null ? $resultUser["mdp"] : password_hash($_POST["mdp"], PASSWORD_DEFAULT);
     $localisation = $_POST["localisation"]== null ? $resultUser["localisation"] : $_POST["localisation"];
-    $latitude = $_POST['lat'] == null ? $resultUser['latitude'] : $_POST['lat'];
-    $longitude = $_POST['lon'] == null ? $resultUser['longitude'] : $_POST['lon'];
+    $latitude = $_POST['lat'] != 0 ? $_POST['lat'] : $resultUser['latitude'];
+    $longitude = $_POST['lon'] != 0 ? $_POST['lon'] : $resultUser['longitude'];
     $photo = $_FILES['img']['name']==null ? $resultUser['photo'] : $_FILES['img']['name'];
-    
+    print_r($latitude);
+    print_r($longitude);
 
     // $queryCreateUser = "INSERT INTO Users (pseudo, mail, mdp, localisation, latitude, longitude, date, photo) "
     //     . "VALUES ("
@@ -37,9 +37,9 @@ if ($mysqli->connect_errno) {
     //'INSERT INTO tenu_de_la_semaine (id,styliste,haut_1,haut_2,bas,chaussure) VALUES(?,?,?,?,?,?)'
     //: 'UPDATE tenu_de_la_semaine set styliste = ?,haut_1 = ?,haut_2 = ?,bas = ?,chaussure = ? WHERE id = ?';
 
-    $querymodifyUser = $mysqli->prepare("UPDATE Users set pseudo = ?,mail = ?,mdp = ?,localisation = ?,photo = ? WHERE id = ? ");
+    $querymodifyUser = $mysqli->prepare("UPDATE Users set pseudo = ?,mail = ?,mdp = ?,localisation = ?,latitude = ?,longitude = ?,photo = ? WHERE id = ? ");
 
-    $querymodifyUser->bind_param( 'sssisi',$pseudo, $mail, $mdphash, $localisation, $photo, $userid);
+    $querymodifyUser->bind_param( 'sssiddsi',$pseudo, $mail, $mdphash, $localisation, $latitude, $longitude, $photo, $userid);
 
     $modifyUser = $querymodifyUser->execute();
 
