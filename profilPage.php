@@ -13,15 +13,16 @@ if ($mysqli->connect_errno) {
         . "id = '" . $userid . "'";
         $searchUser = $mysqli->query($querySearchUser);
         $resultUser = $searchUser->fetch_assoc();
- if(!empty ($_POST)){
+    if(!empty ($_POST)){
     
     $pseudo = $resultUser["pseudo"];
     $mail = $resultUser["mail"];
     $mdphash = $_POST["mdp"]== null ? $resultUser["mdp"] : password_hash($_POST["mdp"], PASSWORD_DEFAULT);
-    $localisation = $_POST["localisation"]== null ? resultUser["localisation"]: $_POST["localisation"];
-    $latitude = $_POST['lat']== null ? $resultUser['latitude'] : $_POST['latitude'];
-    $longitude = $_POST['lon']== null ? $resultUser['longitude'] : $_POST['longitude'];
-    $photo = ($_FILES['img']['name'])== null ? $resultUser["photo"] : $_FILES['img']['name'];
+    $localisation = $_POST["localisation"]== null ? $resultUser["localisation"] : $_POST["localisation"];
+    $latitude = $_POST['lat'] == null ? $resultUser['latitude'] : $_POST['lat'];
+    $longitude = $_POST['lon'] == null ? $resultUser['longitude'] : $_POST['lon'];
+    $photo = $_FILES['img']['name']==null ? $resultUser['photo'] : $_FILES['img']['name'];
+    
 
     // $queryCreateUser = "INSERT INTO Users (pseudo, mail, mdp, localisation, latitude, longitude, date, photo) "
     //     . "VALUES ("
@@ -36,9 +37,9 @@ if ($mysqli->connect_errno) {
     //'INSERT INTO tenu_de_la_semaine (id,styliste,haut_1,haut_2,bas,chaussure) VALUES(?,?,?,?,?,?)'
     //: 'UPDATE tenu_de_la_semaine set styliste = ?,haut_1 = ?,haut_2 = ?,bas = ?,chaussure = ? WHERE id = ?';
 
-    $querymodifyUser = $mysqli->prepare("UPDATE Users set pseudo = ?,mail = ?,mdp = ?,localisation = ?,latitude = ?,longitude = ?,photo = ? WHERE id = ? ");
+    $querymodifyUser = $mysqli->prepare("UPDATE Users set pseudo = ?,mail = ?,mdp = ?,localisation = ?,photo = ? WHERE id = ? ");
 
-    $querymodifyUser->bind_param( 'ssissddi',$pseudo, $mail, $mdphash, $localisation, $latitude, $longitude, $photo, $userid);
+    $querymodifyUser->bind_param( 'sssisi',$pseudo, $mail, $mdphash, $localisation, $photo, $userid);
 
     $modifyUser = $querymodifyUser->execute();
 
@@ -104,15 +105,17 @@ if ($mysqli->connect_errno) {
         <?php
         echo "<img src='./uploads/users/".$resultUser['photo']."'/>"
         ?>
+       
         </section>
+
         <section id="createForm">
             <h1>Modifier Profil de <?php echo $resultUser['pseudo']?></h1>
-            <form action="" method="post" enctype="multipart/form-data">
+            <form action="/profilPage.php" method="post" enctype="multipart/form-data">
                 <div>
                
                 </div>
                 <div>
-                    <input type="number" name="localisation" maxlength="5" placeholder="votre code postal" required />
+                    <input type="number" name="localisation" maxlength="5" placeholder="votre code postal" />
                 </div>
                 <div>
                     <input type="password" name="mdp" placeholder="votre mot de passe">
@@ -121,9 +124,10 @@ if ($mysqli->connect_errno) {
                     <input type="file" name="img" placeholder="votre photo de profil">
                 </div>
                 <input type="submit" value="VALIDER" />
+                <?php include("./localisation.php") ?> 
             </form>
-
-            <?php include("./localisation.php") ?>
+</section>
+            
          
 
 </body>
