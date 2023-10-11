@@ -96,13 +96,14 @@ $mysqli = new mysqli("localhost", "root", "root", "voisinous");
     <section class="left" id="groupFeed">
             <?php 
         if(isUserMember($mysqli)==true) {
+            setComments($mysqli);
             echo ("<form action='".getAllCommentsByGroup($mysqli, $groupId)."' method='POST'>
             <textarea name='content' style='color:grey;' placeholder='Ecrivez quelque chose ...'></textarea>
             <button class='greyBtn' id='newmessage' type='submit' value='envoyer' name='commentSubmit'>NOUVEAU MESSAGE</button>
             </form>");
 
             // getAllCommentsByGroup($mysqli, $groupId);
-            setComments($mysqli);
+            
 
         }
         else {

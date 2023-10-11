@@ -24,6 +24,7 @@ include("./messageFonctions.php");
         <section class="left" id="feed">
             <h1>Derniers messages</h1>
             <?php getAllCommentsByUser($mysqli); ?>
+            <?php displayGroupMessages($mysqli); ?>
         </section>
         <aside class="right" id="myGroups">
             <h1>Mes groupes</h1>

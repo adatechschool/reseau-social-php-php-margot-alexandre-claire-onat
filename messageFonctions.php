@@ -8,7 +8,6 @@ if ($mysqli->connect_errno) {
     echo("Échec de la connexion : " . $mysqli->connect_error);
     exit();
 }
-
 // Fonction qui récupère les commentaires des utilisateurs dans la base de données.
 function setComments($mysqli) { 
     if(isset($_POST['commentSubmit']) && isset($_SESSION['pseudo'])) {
@@ -172,42 +171,54 @@ function getAllCommentsByGroup($mysqli, $groupeid) {
     }
 }
 
-//function getAllCommentsByGroup($mysqli, $groupeid) {
- //   $querygetAllMessagesGroup = 
-   // "SELECT * FROM Posts
-   // WHERE groupeid = " . $groupeid .";";
-   // $queryMessagesGroup = $mysqli->query($querygetAllMessagesGroup);
+function displayGroupMessages($mysqli) {
+    $queryGetListGroupe = "SELECT *
+    FROM groupemembers
+    WHERE userid = " . $_SESSION['id'] . ";";
+    $listGroupeID = $mysqli->query($queryGetListGroupe);
 
-   // $allMessagesGroup = array();
-   // foreach($queryMessagesGroup as $message){
-     //   array_push($allMessagesGroup,$message);
-   // }
-   // $allMessagesGroup = array_reverse($allMessagesGroup);
+    $queryGetListPost ="SELECT content FROM `posts` 
+    WHERE userid AND groupeid = 12;";
+    $listPosts = $mysqli->query($queryGetListPost);
 
-  //  foreach($allMessagesGroup as $message){
+    // Si la requête est réussie.
+    if ($listGroupeID) {
+    // Affichage des messages par ordre décroissant.
+    $allListGroups = array();
+    foreach($listGroupeID as $listGroup){
+        if($listPosts){
+            array_push($allListGroups,$listGroup, $listPosts);
+        }
+    }
+    $allListGroups = array_reverse($allListGroups);
+// nouvelle query dans "posts" et boucle si le groupid = ce quil ya dans l'array alllistgroups avec une condition si groupid/userid a un content 
 
-    //    $queryGroupName = 
-      //  "SELECT name FROM groupes
-      //  WHERE id = " . $message['groupeid'] . ";";
-      //  $getGroupName = $mysqli->query($queryGroupName);
-      //  $groupe = $getGroupName->fetch_array();
+    foreach($allListGroups as $listGroup) {
 
-       // $queryUserPseudo = 
-       // "SELECT pseudo FROM users
-       // WHERE id = " . $message['userid'] . ";";
-       // $getUserPseudo = $mysqli->query($queryUserPseudo);
-       // $user = $getUserPseudo->fetch_array();
+        $queryGroupName = 
+        "SELECT name FROM groupes
+        WHERE id = " . $listGroup['groupid'] . ";";
+        $getGroupName = $mysqli->query($queryGroupName);
+        $groupe = $getGroupName->fetch_array();
 
-       // echo "<article class='message'>
-         //           <div class='messageHeader'>
-           //             <p>" . $message['date'] . "</p>
-             //           <p>par " . $user['pseudo'] . "</p>
-               //     </div>
-                 //   <p>" . $message['content'] . "</p>
-                   // <div class='messageFooter'>
-                    //    <a href=''>♥ 256</a>
-                   // </div>
-               // </article>";
-   // }
-//}
-    ?>
+        $queryUserPseudo = 
+        "SELECT pseudo FROM users
+        WHERE id = " . $listGroup['userid'] . ";";
+        $getUserPseudo = $mysqli->query($queryUserPseudo);
+        $user = $getUserPseudo->fetch_array();
+
+        echo "<article class='message'>
+                    <div class='messageHeader'>
+                        <p> le " . $message['date'] . "</p>
+                    <p>par " . $user['pseudo'] . " (<a href='./groupPage.php?id=". $listGroup['groupid'] . "'>" . $groupe['name'] . "</a>)</p>
+                    </div>
+                    <p>" . $message['content'] . "</p>
+                    <div class='messageFooter'>
+                        <a href=''>♥ 256</a>
+                    </div>
+                </article>";
+     } 
+}
+}
+
+?>
